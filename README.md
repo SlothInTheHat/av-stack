@@ -1,6 +1,6 @@
 ﻿# Mini AV Stack
 
-I'm building a small autonomous driving stack from the ground up: map a real place, localize in it, perceive what's around, plan, and drive in a simulated copy of it. Each part maps to a role on a real AV team. Coming from GIS, I'm going deepest on mapping and localization.
+A small autonomous driving stack from the ground up: map a real place, localize in it, perceive what's around, plan, and drive in a simulated copy of it. 
 
 It runs on a laptop (RTX 5070 Ti, 12 GB VRAM) with CARLA as the simulator and ROS 2 as the middleware.
 
@@ -21,7 +21,7 @@ It runs on a laptop (RTX 5070 Ti, 12 GB VRAM) with CARLA as the simulator and RO
 
 The goal was a complete loop, simulator to controller and back, before making any one part good. A Tesla Model 3 follows 600 m of lane centre in CARLA's Town01:
 
-- **Steering: pure pursuit.** Each tick, the car picks a point on the path a few metres ahead (the red dot above) and steers along the arc that reaches it. The lookahead grows with speed, which trades tight tracking for smoothness.
+- **Steering: pure pursuit.** Each tick, the car picks a point on the path a few metres ahead (the red dot) and steers along the arc that reaches it. The lookahead distance scales with speed, which trades tight tracking for smoothness.
 - **Speed: PID**, with anti-windup so the integral doesn't build up while the throttle is maxed out.
 
 It holds the lane to **0.08 m on average (1.01 m worst)** at 8 m/s. The same controller drove a map generated from OpenStreetMap (see Phase 2) with 0.07 m average error.
@@ -35,7 +35,7 @@ bash sim/launch_demo.sh                                                         
 
 For now the car gets its exact position from the simulator and its path from CARLA's map. Later phases replace each of those shortcuts with a real module.
 
-**What went wrong along the way**
+**Challenges**
 - After 75 s the car swerved off the road. The path index wrapped from the end of the list back to the start, so it steered at a point hundreds of metres behind it. It now stops at the end of the path.
 - The ROS bridge started, printed nothing, and did nothing. `main()` was defined but never called.
 - A launch script overwrote `PYTHONPATH` instead of appending to it, which hid ROS's Python packages.
